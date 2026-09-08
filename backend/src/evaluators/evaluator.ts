@@ -1,6 +1,7 @@
 export interface EvaluationResult {
   overallScore: number;
   summary: string;
+  strengths: string[];
   improvements: string[];
 }
 

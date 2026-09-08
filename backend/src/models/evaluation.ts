@@ -21,6 +21,11 @@ const evaluationSchema = new mongoose.Schema(
       required: true,
     },
 
+    strengths: {
+      type: [String],
+      default: [],
+    },
+
     improvements: {
       type: [String],
       default: [],
@@ -31,7 +36,4 @@ const evaluationSchema = new mongoose.Schema(
   }
 );
 
-
-const evaluationModel = mongoose.model("Evaluation", evaluationSchema);
-
-export default evaluationModel
+export default mongoose.model("Evaluation", evaluationSchema);

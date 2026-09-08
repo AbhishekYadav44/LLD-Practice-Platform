@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "seed" : "tsc -b && node dist/dataseed.js",
     "dev": " tsc -b && node dist/index.js"
   },
   "keywords": [],

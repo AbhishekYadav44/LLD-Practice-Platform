@@ -6,6 +6,7 @@ import connectDB from "./db.js";
 import userRoutes from "./routes/userRoutes.js"
 import problemRoutes from "./routes/problemRoutes.js"
 import attemptRoutes from "./routes/attemptRoutes.js"
+import submissionRoutes from "./routes/submissionRoutes.js"
 dotenv.config();
 
 const app = express();
@@ -22,6 +23,7 @@ app.get("/", (req, res) => {
 app.use("/api/auth", userRoutes)
 app.use("/api/problems", problemRoutes);
 app.use("/api/attempts", attemptRoutes);
+app.use("/api/submissions", submissionRoutes);
 
 connectDB()
 

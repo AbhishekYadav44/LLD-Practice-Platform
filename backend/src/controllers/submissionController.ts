@@ -59,30 +59,41 @@ const createSubmission = async (
         attempt.status = "Evaluating";
         await attempt.save();
 
-        const evaluator = new AIEvaluator();
+      
 
-        const result = await evaluator.evaluate(content);
+        try {
+            const evaluator = new AIEvaluator();
 
+            const result = await evaluator.evaluate(content);
 
-        const evaluation = await evaluationModel.create({
-            submissionId: submission._id,
-            overallScore: result.overallScore,
-            summary: result.summary,
-            strengths: result.strengths,
-            improvements: result.improvements,
-        });
+            const evaluation = await evaluationModel.create({
+                submissionId: submission._id,
+                overallScore: result.overallScore,
+                summary: result.summary,
+                strengths: result.strengths,
+                improvements: result.improvements,
+            });
 
+            attempt.status = "Completed";
+            await attempt.save();
 
-        attempt.status = "Completed";
-        await attempt.save();
+            return res.status(201).json({
+                message: "Submission evaluated successfully",
+                submission,
+                evaluation,
+            });
+        } catch (error: any) {
+            attempt.status = "Failed";
+            await attempt.save();
 
-        return res.status(201).json({
-            message: "Submission evaluated successfully",
+            return res.status(500).json({
+                message: "Submission saved but evaluation failed",
+                submission,
+                error: error.message,
+            });
+        }
 
-            submission,
-
-            evaluation,
-        });
+        
     } catch (error: any) {
         return res.status(500).json({
             message: "Submission evaluation failed",

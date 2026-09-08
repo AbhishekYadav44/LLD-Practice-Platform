@@ -1,10 +1,11 @@
-import  express from "express";
+import express from "express";
 import cors from 'cors'
 import dotenv from 'dotenv'
 import { connect } from "mongoose";
 import connectDB from "./db.js";
 import userRoutes from "./routes/userRoutes.js"
 import problemRoutes from "./routes/problemRoutes.js"
+import attemptRoutes from "./routes/attemptRoutes.js"
 dotenv.config();
 
 const app = express();
@@ -13,18 +14,19 @@ app.use(cors());
 app.use(express.json());
 
 app.get("/", (req, res) => {
-  res.json({
-    message: "LLD Practice Platform API is running",
-  });
+    res.json({
+        message: "LLD Practice Platform API is running",
+    });
 });
 
-app.use("/api/auth",userRoutes)
+app.use("/api/auth", userRoutes)
 app.use("/api/problems", problemRoutes);
- 
+app.use("/api/attempts", attemptRoutes);
+
 connectDB()
 
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+    console.log(`Server running on port ${PORT}`);
 });

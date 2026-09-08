@@ -28,4 +28,5 @@ const problemSchema = new mongoose.Schema(
   }
 );
 
-export default mongoose.model("Problem", problemSchema);
+const problemModel =  mongoose.model("Problem", problemSchema);
+export default problemModel

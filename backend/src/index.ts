@@ -3,6 +3,7 @@ import cors from 'cors'
 import dotenv from 'dotenv'
 import { connect } from "mongoose";
 import connectDB from "./db.js";
+import userRoutes from "./routes/userRoutes.js"
 dotenv.config();
 
 const app = express();
@@ -16,6 +17,7 @@ app.get("/", (req, res) => {
   });
 });
 
+app.use("/auth",userRoutes)
  
 connectDB()
 

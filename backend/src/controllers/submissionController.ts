@@ -59,7 +59,7 @@ const createSubmission = async (
         attempt.status = "Evaluating";
         await attempt.save();
 
-      
+
 
         try {
             const evaluator = new AIEvaluator();
@@ -93,7 +93,7 @@ const createSubmission = async (
             });
         }
 
-        
+
     } catch (error: any) {
         return res.status(500).json({
             message: "Submission evaluation failed",
@@ -101,5 +101,65 @@ const createSubmission = async (
         });
     }
 };
+const getEvaluation = async (
+    req: AuthRequest,
+    res: Response
+) => {
+    try {
+        if (!req.userId) {
+            return res.status(401).json({
+                message: "Unauthorized",
+            });
+        }
 
-export { createSubmission };
+        const { submissionId } = req.params as {
+            submissionId: string;
+        };
+
+        const submission = await submissionModel.findById(
+            submissionId
+        );
+
+        if (!submission) {
+            return res.status(404).json({
+                message: "Submission not found",
+            });
+        }
+
+        const attempt = await attemptModel.findById(
+            submission.attemptId
+        );
+
+        if (!attempt) {
+            return res.status(404).json({
+                message: "Attempt not found",
+            });
+        }
+
+        if (attempt.userId.toString() !== req.userId) {
+            return res.status(403).json({
+                message: "You cannot access this evaluation",
+            });
+        }
+
+        const evaluation = await evaluationModel.findOne({
+            submissionId,
+        });
+
+        if (!evaluation) {
+            return res.status(404).json({
+                message: "Evaluation not found",
+            });
+        }
+
+        return res.status(200).json({
+            evaluation,
+        });
+    } catch (error: any) {
+        return res.status(500).json({
+            message: "Failed to fetch evaluation",
+            error: error.message,
+        });
+    }
+};
+export { createSubmission , getEvaluation};

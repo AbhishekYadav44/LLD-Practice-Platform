@@ -16,6 +16,17 @@ const createSubmission = async (
         const { attemptId } = req.params as { attemptId: string };
         const { content } = req.body;
 
+        if (
+            !content ||
+            !content.includes("Classes:") ||
+            !content.includes("Responsibilities:") ||
+            !content.includes("Relationships:")
+        ) {
+            return res.status(400).json({
+                message: "Please complete the main LLD design sections before submitting.",
+            });
+        }
+
         if (!attemptId) {
             return res.status(400).json({
                 message: "attemptId required",
@@ -162,4 +173,4 @@ const getEvaluation = async (
         });
     }
 };
-export { createSubmission , getEvaluation};
+export { createSubmission, getEvaluation };

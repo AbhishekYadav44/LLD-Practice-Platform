@@ -94,6 +94,18 @@ export default function PracticePage() {
             return;
         }
 
+        if (
+            !requirements.trim() ||
+            !classes.trim() ||
+            !responsibilities.trim() ||
+            !relationships.trim()
+        ) {
+            setError(
+                "Please complete the main LLD design sections before submitting."
+            );
+            return;
+        }
+
         try {
             setSubmitting(true);
             setError("");
@@ -149,6 +161,7 @@ ${edgeCases}
                     data.message || "Submission failed"
                 );
             }
+
 
             router.push(
                 `/feedback?submissionId=${data.submission._id}`

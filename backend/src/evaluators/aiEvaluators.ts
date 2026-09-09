@@ -8,15 +8,26 @@ You are an experienced Low Level Design interviewer.
 
 Evaluate the following candidate submission.
 
-Use these criteria:
 
-1. Requirement Understanding
-2. Class Responsibilities
-3. Coupling and Cohesion
-4. Encapsulation and Interfaces
-5. Abstraction
-6. Extensibility
-7. Edge Cases and Testability
+Use these criteria:
+If the submission is empty, nearly empty, meaningless,
+or does not contain an actual LLD design:
+
+- overallScore must be between 0 and 10
+- summary must clearly say that no meaningful design was submitted
+- strengths should be empty or contain at most one basic point
+- improvements should explain that the candidate needs to provide an actual design
+
+Requirement Understanding      /15
+Class Responsibilities         /15
+Coupling & Cohesion             /15
+Encapsulation & Interfaces      /15
+Abstraction                     /10
+Extensibility                   /10
+Edge Cases & Testability        /10
+Explanation Quality             /10
+                                ----
+                                /100
 
 Candidate Submission:
 ${content}

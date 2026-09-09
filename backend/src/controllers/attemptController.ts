@@ -2,14 +2,16 @@ import type { Request, Response } from "express";
 import attemptModel from "../models/attempt.js";
 import problemModel from "../models/problem.js";
 import submissionModel from "../models/submission.js";
-import Evaluations from "../models/evaluation.js";
 import evaluationModel from "../models/evaluation.js";
 
 interface AuthRequest extends Request {
     userId?: string;
 }
 
-const createAttempt = async (req: AuthRequest, res: Response) => {
+const createAttempt = async (
+    req: AuthRequest,
+    res: Response
+) => {
     try {
         const { problemId } = req.body;
 
@@ -51,6 +53,48 @@ const createAttempt = async (req: AuthRequest, res: Response) => {
     }
 };
 
+const getAttemptById = async (
+    req: AuthRequest,
+    res: Response
+) => {
+    try {
+        if (!req.userId) {
+            return res.status(401).json({
+                message: "Unauthorized",
+            });
+        }
+
+        const { attemptId } = req.params as {
+            attemptId: string;
+        };
+
+        const attempt = await attemptModel
+            .findOne({
+                _id: attemptId,
+                userId: req.userId,
+            })
+            .populate(
+                "problemId",
+                "title description difficulty requirements"
+            );
+
+        if (!attempt) {
+            return res.status(404).json({
+                message: "Attempt not found",
+            });
+        }
+
+        return res.status(200).json({
+            attempt,
+        });
+    } catch (error: any) {
+        return res.status(500).json({
+            message: "Failed to fetch attempt",
+            error: error.message,
+        });
+    }
+};
+
 const getAttemptHistory = async (
     req: AuthRequest,
     res: Response
@@ -86,7 +130,8 @@ const getAttemptHistory = async (
                     problem: attempt.problemId,
                     status: attempt.status,
                     score: evaluation?.overallScore ?? null,
-                    submittedAt: submission?.submittedAt ?? null,
+                    submittedAt:
+                        submission?.submittedAt ?? null,
                 };
             })
         );
@@ -102,4 +147,8 @@ const getAttemptHistory = async (
     }
 };
 
-export { createAttempt, getAttemptHistory };
+export {
+    createAttempt,
+    getAttemptById,
+    getAttemptHistory,
+};

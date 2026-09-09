@@ -3,7 +3,13 @@
 A focused MVP for practicing Low Level Design interview problems and getting structured feedback.
 
 **GitHub:** `https://github.com/AbhishekYadav44/LLD-Practice-Platform.git`
-Live url : 
+Live url : https://lld-practice-platform-omega.vercel.app/
+
+## Domain Model
+
+Problem 1:N Attempt 1:N Submission 1:1 Evaluation
+
+![LLD Practice Platform Domain Design](./docs/LLD-platform.png)
 
 ## Features
 

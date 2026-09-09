@@ -76,11 +76,6 @@ cd frontend
 npm install
 ```
 
-Create `.env.local`:
-
-```env
-NEXT_PUBLIC_API_URL=http://localhost:4000
-```
 
 Start frontend:
 
@@ -110,8 +105,3 @@ Started → Evaluating → Completed
 
 The submission is saved before evaluation, so an evaluation failure does not lose the learner's work.
 
-## Documentation
-
-* `RESEARCH.md` — research and product direction
-* `DESIGN.md` — architecture and trade-offs
-* `AI_USAGE.md` — AI usage

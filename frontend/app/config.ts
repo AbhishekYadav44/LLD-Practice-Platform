@@ -1,1 +1,1 @@
-export const BACKEND_API = "http://localhost:4000"
+export const BACKEND_API = "https://lld-practice-platform-tz2l.onrender.com"

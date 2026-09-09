@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { BACKEND_API } from "../config";
 
 interface Problem {
   _id: string;
@@ -38,7 +39,7 @@ export default function HistoryPage() {
       }
 
       const response = await fetch(
-        "http://localhost:4000/api/attempts/history",
+        `${BACKEND_API}/api/attempts/history`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

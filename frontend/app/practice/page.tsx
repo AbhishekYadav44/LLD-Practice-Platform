@@ -3,6 +3,9 @@
 import { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 
+
+import { BACKEND_API } from "../config";
+
 interface Problem {
     _id: string;
     title: string;
@@ -57,7 +60,7 @@ export default function PracticePage() {
             }
 
             const response = await fetch(
-                `http://localhost:4000/api/attempts/${attemptId}`,
+                `${BACKEND_API}/api/attempts/${attemptId}`,
                 {
                     method: "GET",
                     headers: {
@@ -141,7 +144,7 @@ ${edgeCases}
 `;
 
             const response = await fetch(
-                `http://localhost:4000/api/submissions/${attemptId}`,
+                `${BACKEND_API}/api/submissions/${attemptId}`,
                 {
                     method: "POST",
                     headers: {

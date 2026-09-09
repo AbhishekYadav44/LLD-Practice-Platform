@@ -1,7 +1,9 @@
+
 "use client";
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { BACKEND_API } from "../config";
 
 interface Problem {
   _id: string;
@@ -18,23 +20,26 @@ export default function ProblemsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  
   useEffect(() => {
     const fetchProblems = async () => {
       try {
         const response = await fetch(
-          "http://localhost:4000/api/problems"
+          `${BACKEND_API}/api/problems`
         );
 
         const data = await response.json();
 
         if (!response.ok) {
-          throw new Error(data.message || "Failed to fetch problems");
+          throw new Error(
+            data.message || "Failed to fetch problems"
+          );
         }
 
         setProblems(data.problems || data);
       } catch (error: any) {
-        setError(error.message || "Something went wrong");
+        setError(
+          error.message || "Something went wrong"
+        );
       } finally {
         setLoading(false);
       }
@@ -43,8 +48,9 @@ export default function ProblemsPage() {
     fetchProblems();
   }, []);
 
-
-  const handleStartPractice = async (problemId: string) => {
+  const handleStartPractice = async (
+    problemId: string
+  ) => {
     try {
       const token = localStorage.getItem("token");
 
@@ -54,7 +60,7 @@ export default function ProblemsPage() {
       }
 
       const response = await fetch(
-        "http://localhost:4000/api/attempts",
+        `${BACKEND_API}/api/attempts`,
         {
           method: "POST",
           headers: {
@@ -75,12 +81,15 @@ export default function ProblemsPage() {
         );
       }
 
-   
       const attemptId = data.attempt._id;
 
-      router.push(`/practice?attemptId=${attemptId}`);
+      router.push(
+        `/practice?attemptId=${attemptId}`
+      );
     } catch (error: any) {
-      setError(error.message || "Something went wrong");
+      setError(
+        error.message || "Something went wrong"
+      );
     }
   };
 
@@ -99,6 +108,29 @@ export default function ProblemsPage() {
   return (
     <main className="min-h-screen bg-gray-950 px-6 py-10 text-white">
       <div className="mx-auto max-w-5xl">
+
+        <div className="mb-6 flex flex-wrap gap-3">
+          <button
+            onClick={() => router.push("/")}
+            className="rounded-lg border border-gray-700 px-4 py-2 text-sm text-gray-300 transition hover:bg-gray-900"
+          >
+            Home
+          </button>
+
+          <button
+            onClick={() => router.back()}
+            className="rounded-lg border border-gray-700 px-4 py-2 text-sm text-gray-300 transition hover:bg-gray-900"
+          >
+            ← Back
+          </button>
+
+          <button
+            onClick={() => router.push("/history")}
+            className="rounded-lg border border-gray-700 px-4 py-2 text-sm text-gray-300 transition hover:bg-gray-900"
+          >
+            History
+          </button>
+        </div>
 
         <h1 className="text-3xl font-bold">
           LLD Problems

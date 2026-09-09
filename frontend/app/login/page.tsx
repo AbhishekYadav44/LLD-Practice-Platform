@@ -4,6 +4,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { BACKEND_API } from "../config";
 
 export default function LoginPage() {
     const router = useRouter();
@@ -21,7 +22,7 @@ export default function LoginPage() {
 
         try {
             const response = await fetch(
-                "http://localhost:4000/api/auth/login",
+                `${BACKEND_API}/api/auth/login`,
                 {
                     method: "POST",
                     headers: {

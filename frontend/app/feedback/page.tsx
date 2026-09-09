@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
+import { BACKEND_API } from "../config";
 
 interface Evaluation {
     overallScore: number;
@@ -42,7 +43,7 @@ export default function FeedbackPage() {
             }
 
             const response = await fetch(
-                `http://localhost:4000/api/submissions/evaluation/${submissionId}`,
+                `${BACKEND_API}/api/submissions/evaluation/${submissionId}`,
                 {
                     method: "GET",
                     headers: {

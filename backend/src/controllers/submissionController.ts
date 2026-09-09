@@ -1,9 +1,11 @@
+
 import type { Request, Response } from "express";
 import attemptModel from "../models/attempt.js";
 import submissionModel from "../models/submission.js";
 import evaluationModel from "../models/evaluation.js";
 import RuleEvaluator from "../evaluators/ruleEvaluators.js";
 import AIEvaluator from "../evaluators/aiEvaluators.js";
+
 interface AuthRequest extends Request {
     userId?: string;
 }
@@ -15,17 +17,6 @@ const createSubmission = async (
     try {
         const { attemptId } = req.params as { attemptId: string };
         const { content } = req.body;
-
-        if (
-            !content ||
-            !content.includes("Classes:") ||
-            !content.includes("Responsibilities:") ||
-            !content.includes("Relationships:")
-        ) {
-            return res.status(400).json({
-                message: "Please complete the main LLD design sections before submitting.",
-            });
-        }
 
         if (!attemptId) {
             return res.status(400).json({
@@ -39,12 +30,17 @@ const createSubmission = async (
             });
         }
 
-        if (!content) {
+        if (
+            !content ||
+            !content.includes("Classes:") ||
+            !content.includes("Responsibilities:") ||
+            !content.includes("Relationships:")
+        ) {
             return res.status(400).json({
-                message: "Submission content is required",
+                message:
+                    "Please complete the main LLD design sections before submitting.",
             });
         }
-
 
         const attempt = await attemptModel.findById(attemptId);
 
@@ -54,13 +50,20 @@ const createSubmission = async (
             });
         }
 
-
         if (attempt.userId.toString() !== req.userId) {
             return res.status(403).json({
                 message: "You cannot submit for this attempt",
             });
         }
 
+        if (
+            attempt.status === "Evaluating" ||
+            attempt.status === "Completed"
+        ) {
+            return res.status(400).json({
+                message: "This attempt has already been submitted.",
+            });
+        }
 
         const submission = await submissionModel.create({
             attemptId,
@@ -70,19 +73,29 @@ const createSubmission = async (
         attempt.status = "Evaluating";
         await attempt.save();
 
-
-
         try {
-            const evaluator = new AIEvaluator();
+            const ruleEvaluator = new RuleEvaluator();
+            const aiEvaluator = new AIEvaluator();
 
-            const result = await evaluator.evaluate(content);
+            const ruleResult = await ruleEvaluator.evaluate(content);
+            const aiResult = await aiEvaluator.evaluate(content);
+
+            const overallScore = Math.round(
+                (ruleResult.overallScore + aiResult.overallScore) / 2
+            );
 
             const evaluation = await evaluationModel.create({
                 submissionId: submission._id,
-                overallScore: result.overallScore,
-                summary: result.summary,
-                strengths: result.strengths,
-                improvements: result.improvements,
+                overallScore,
+                summary: aiResult.summary,
+                strengths: [
+                    ...ruleResult.strengths,
+                    ...aiResult.strengths,
+                ],
+                improvements: [
+                    ...ruleResult.improvements,
+                    ...aiResult.improvements,
+                ],
             });
 
             attempt.status = "Completed";
@@ -103,8 +116,6 @@ const createSubmission = async (
                 error: error.message,
             });
         }
-
-
     } catch (error: any) {
         return res.status(500).json({
             message: "Submission evaluation failed",
@@ -112,6 +123,7 @@ const createSubmission = async (
         });
     }
 };
+
 const getEvaluation = async (
     req: AuthRequest,
     res: Response
@@ -173,4 +185,8 @@ const getEvaluation = async (
         });
     }
 };
-export { createSubmission, getEvaluation };
+
+export {
+    createSubmission,
+    getEvaluation,
+};
